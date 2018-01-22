@@ -84,7 +84,7 @@ TRAIN_FILES = ['../data\\Adiac_TRAIN', # 0
                '../data\\Worms_TRAIN',  # 82
                '../data\\WormsTwoClass_TRAIN',  # 83
                '../data\\yoga_TRAIN',  # 84,
-               '/Users/paul/repo/master-by-phil/data/UCR-dataset/fmri_2/fmri_2_TRAIN', #85
+               '../master-by-phil/data/UCR-dataset/fmri_2/fmri_2_TRAIN', #85
                ]
 
 TEST_FILES = ['../data\\Adiac_TEST', # 0
@@ -172,7 +172,7 @@ TEST_FILES = ['../data\\Adiac_TEST', # 0
               '../data\\Worms_TEST',  # 82
               '../data\\WormsTwoClass_TEST',  # 83
               '../data\\yoga_TEST',  # 84,
-              '/Users/paul/repo/master-by-phil/data/UCR-dataset/fmri_2/fmri_2_TEST' # 85 
+              '../master-by-phil/data/UCR-dataset/fmri_2/fmri_2_TEST' # 85 
               ]
 
 MAX_SEQUENCE_LENGTH_LIST = [176, # 0
