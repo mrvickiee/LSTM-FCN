@@ -56,6 +56,7 @@ def load_dataset_at(index, normalize_timeseries=False, verbose=True) -> (np.arra
             X_train_std = X_train.std()
             X_train = (X_train - X_train_mean) / (X_train_std + 1e-8)
 
+
     if verbose: print("Finished loading train dataset..")
 
     if os.path.exists(TEST_FILES[index]):
@@ -103,7 +104,6 @@ def load_dataset_at(index, normalize_timeseries=False, verbose=True) -> (np.arra
         print("Number of train samples : ", X_train.shape[0], "Number of test samples : ", X_test.shape[0])
         print("Number of classes : ", nb_classes)
         print("Sequence length : ", X_train.shape[-1])
-
 
     return X_train, y_train, X_test, y_test, is_timeseries
 

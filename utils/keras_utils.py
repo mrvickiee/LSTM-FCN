@@ -3,11 +3,13 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import itertools
 
 mpl.style.use('seaborn-paper')
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import confusion_matrix
 
 import warnings
 warnings.simplefilter('ignore', category=DeprecationWarning)
@@ -119,7 +121,97 @@ def evaluate_model(model:Model, dataset_id, dataset_prefix, batch_size=128, test
     print()
     print("Final Accuracy : ", accuracy)
 
+    predict_test_set(dataset_id, normalize_timeseries, model)
+
     return accuracy
+
+def predict_test_set(dataset_id, normalize_timeseries, model):
+
+    # test
+    _, _, X_test, y_test, is_timeseries = load_dataset_at(dataset_id,
+                                                          normalize_timeseries=normalize_timeseries)
+
+    # test coor
+    testCoor = pd.read_csv('../master-by-phil/data/UCR-dataset/fmri/fmri_test_coor', header=None, encoding='latin-1')
+    testCoor = testCoor.iloc[:,1:];
+
+    max_nb_words, sequence_length = calculate_dataset_metrics(X_test)
+
+    if sequence_length != MAX_SEQUENCE_LENGTH_LIST[dataset_id]:
+        if cutoff is None:
+            choice = cutoff_choice(dataset_id, sequence_length)
+        else:
+            assert cutoff in ['pre', 'post'], 'Cutoff parameter value must be either "pre" or "post"'
+            choice = cutoff
+
+        if choice not in ['pre', 'post']:
+            return
+        else:
+            _, X_test = cutoff_sequence(None, X_test, choice, dataset_id, sequence_length)
+
+    if not is_timeseries:
+        X_test = pad_sequences(X_test, maxlen=MAX_SEQUENCE_LENGTH_LIST[dataset_id], padding='post', truncating='post')
+    y_test = to_categorical(y_test, len(np.unique(y_test)))
+
+    predictions = model.predict(X_test);
+
+    y_pred = np.argmax(predictions,axis=1)
+
+    cf_matrix = confusion_matrix(np.argmax(y_test,axis=1), y_pred);
+    # plot_confusion_matrix(cf_matrix, classes=['GM','WM','BV','NB','CSF'], normalize=False)
+
+    #show plot
+    result = np.zeros((240,240,37));
+
+    
+    for x in range(len(y_pred)):
+        result[testCoor[1][x],testCoor[2][x], testCoor[3][x]] = y_pred[x]
+        
+    plt.imshow(result[:,:,5]);
+    plt.colorbar()
+    plt.show()
+
+
+
+
+
+
+
+def plot_confusion_matrix(cm, classes,
+                          normalize=False,
+                          title='Confusion matrix',
+                          cmap=plt.cm.Blues):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    plt.figure()
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+
+    print(cm)
+
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
+
+    fmt = '.2f' if normalize else 'd'
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, format(cm[i, j], fmt),
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
+
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.show()
 
 
 def hyperparameter_search_over_model(model_gen, dataset_id, param_grid, cutoff=None,

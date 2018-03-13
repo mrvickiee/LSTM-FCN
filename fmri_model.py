@@ -6,8 +6,7 @@ from utils.constants import MAX_SEQUENCE_LENGTH_LIST, NB_CLASSES_LIST
 from utils.keras_utils import train_model, evaluate_model, set_trainable, visualize_context_vector, visualize_cam
 from utils.layer_utils import AttentionLSTM
 
-DATASET_INDEX = 85
-
+DATASET_INDEX = 87
 MAX_SEQUENCE_LENGTH = MAX_SEQUENCE_LENGTH_LIST[DATASET_INDEX]
 NB_CLASS = NB_CLASSES_LIST[DATASET_INDEX]
 
@@ -84,15 +83,13 @@ def generate_model_2():
 def generate_model_3():
     ip = Input(shape=(1, MAX_SEQUENCE_LENGTH))
 
-    x = Permute((2,1))(ip)
-    x = Conv1D(128, 8, padding='same', kernel_initializer='he_uniform')(x) 
-    x = MaxPooling1D(pool_size=2)(x);
-
-    x = LSTM(128)(x)
-    x = Dropout(0.8)(x)
+    # x = LSTM(64, return_sequences=True)(ip)
+    # x = LSTM(64, return_sequences=True)(x)
+    x = LSTM(64)(ip)
+    x = Dropout(0.8)(x)   
 
     out = Dense(NB_CLASS, activation='softmax')(x)
-
+    
     model = Model(ip, out)
 
     model.summary()
@@ -103,11 +100,11 @@ def generate_model_3():
 
 
 if __name__ == "__main__":
-    model = generate_model_3()
+    model = generate_model()
 
-    train_model(model, DATASET_INDEX, dataset_prefix='fmri', epochs=100, batch_size=64,normalize_timeseries=True)
+    # train_model(model, DATASET_INDEX, dataset_prefix='fmri_fcn_zscore_spatial_b64', epochs=2000, batch_size=64,normalize_timeseries=False)
 
-    # evaluate_model(model, DATASET_INDEX, dataset_prefix='beef', batch_size=64)
+    evaluate_model(model, DATASET_INDEX+1, dataset_prefix='fmri_fcn_zscore_spatial_b64', batch_size=64, normalize_timeseries=False)
 
     # visualize_context_vector(model, DATASET_INDEX, dataset_prefix='beef', visualize_sequence=True,
     #                         visualize_classwise=True, limit=1)
