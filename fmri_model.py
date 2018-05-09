@@ -5,8 +5,9 @@ from keras.layers import Conv1D, BatchNormalization, GlobalAveragePooling1D, Per
 from utils.constants import MAX_SEQUENCE_LENGTH_LIST, NB_CLASSES_LIST
 from utils.keras_utils import train_model, evaluate_model, set_trainable, visualize_context_vector, visualize_cam
 from utils.layer_utils import AttentionLSTM
+import scipy.io
 
-DATASET_INDEX = 87
+DATASET_INDEX = 85 #reduce 2 by purpose, refer to loop in main func
 MAX_SEQUENCE_LENGTH = MAX_SEQUENCE_LENGTH_LIST[DATASET_INDEX]
 NB_CLASS = NB_CLASSES_LIST[DATASET_INDEX]
 
@@ -85,7 +86,7 @@ def generate_model_3():
 
     # x = LSTM(64, return_sequences=True)(ip)
     # x = LSTM(64, return_sequences=True)(x)
-    x = LSTM(64)(ip)
+    x = LSTM(100)(ip)
     x = Dropout(0.8)(x)   
 
     out = Dense(NB_CLASS, activation='softmax')(x)
@@ -98,13 +99,53 @@ def generate_model_3():
 
     return model
 
+def generate_model_4():
+    ip = Input(shape=(1, MAX_SEQUENCE_LENGTH))
+
+    y = Permute((2, 1))(ip)
+    y = Conv1D(128, 8, padding='same', kernel_initializer='he_uniform')(y)
+    y = BatchNormalization()(y)
+    y = Activation('relu')(y)
+
+    y = Conv1D(256, 5, padding='same', kernel_initializer='he_uniform')(y)
+    y = BatchNormalization()(y)
+    y = Activation('relu')(y)
+
+    y = Conv1D(128, 3, padding='same', kernel_initializer='he_uniform')(y)
+    y = BatchNormalization()(y)
+    y = Activation('relu')(y)
+
+    y = GlobalAveragePooling1D()(y)
+
+    out = Dense(NB_CLASS, activation='softmax')(y)
+
+    model = Model(ip, out)
+
+    model.summary()
+
+    return model
+
+
+
+
+
 
 if __name__ == "__main__":
-    model = generate_model()
 
-    # train_model(model, DATASET_INDEX, dataset_prefix='fmri_fcn_zscore_spatial_b64', epochs=2000, batch_size=64,normalize_timeseries=False)
+    result = {};
+    for i in range(0,5):
+        model = generate_model_3()
+        current_data_idx = DATASET_INDEX + (i*2);
+        weight_name = "fmri_lstm_{}_bias_zscore_b64".format(i+1);
 
-    evaluate_model(model, DATASET_INDEX+1, dataset_prefix='fmri_fcn_zscore_spatial_b64', batch_size=64, normalize_timeseries=False)
+        print("Training:");
+        train_model(model, current_data_idx, dataset_prefix=weight_name, epochs=100, batch_size=64,normalize_timeseries=False)
+
+        print("Testing:");
+        cm = evaluate_model(model, current_data_idx + 1, dataset_prefix=weight_name, batch_size=64, normalize_timeseries=False)
+        result[i+1] = cm;
+    
+    scipy.io.savemat('result.mat', mdict={'cm1': result[1],'cm2':result[2],'cm3':result[3],'cm4':result[4],'cm5':result[5]});
 
     # visualize_context_vector(model, DATASET_INDEX, dataset_prefix='beef', visualize_sequence=True,
     #                         visualize_classwise=True, limit=1)

@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import itertools
+import scipy.io
 
 mpl.style.use('seaborn-paper')
 
@@ -121,7 +122,7 @@ def evaluate_model(model:Model, dataset_id, dataset_prefix, batch_size=128, test
     print()
     print("Final Accuracy : ", accuracy)
 
-    predict_test_set(dataset_id, normalize_timeseries, model)
+    return predict_test_set(dataset_id, normalize_timeseries, model)
 
     return accuracy
 
@@ -132,8 +133,8 @@ def predict_test_set(dataset_id, normalize_timeseries, model):
                                                           normalize_timeseries=normalize_timeseries)
 
     # test coor
-    testCoor = pd.read_csv('../master-by-phil/data/UCR-dataset/fmri/fmri_test_coor', header=None, encoding='latin-1')
-    testCoor = testCoor.iloc[:,1:];
+    # testCoor = pd.read_csv('../master-by-phil/data/UCR-dataset/fmri/fmri_test_coor', header=None, encoding='latin-1')
+    # testCoor = testCoor.iloc[:,1:];
 
     max_nb_words, sequence_length = calculate_dataset_metrics(X_test)
 
@@ -158,18 +159,22 @@ def predict_test_set(dataset_id, normalize_timeseries, model):
     y_pred = np.argmax(predictions,axis=1)
 
     cf_matrix = confusion_matrix(np.argmax(y_test,axis=1), y_pred);
-    # plot_confusion_matrix(cf_matrix, classes=['GM','WM','BV','NB','CSF'], normalize=False)
+    # plot_confusion_matrix(cf_matrix, classes=['GM','WM','BV', 'NB','CSF'], normalize=False)
+
+    return cf_matrix;
 
     #show plot
-    result = np.zeros((240,240,37));
+    # result = np.zeros((241,241,37));
 
     
-    for x in range(len(y_pred)):
-        result[testCoor[1][x],testCoor[2][x], testCoor[3][x]] = y_pred[x]
+    # for x in range(len(y_pred)):
+    #     result[testCoor[1][x],testCoor[2][x], testCoor[3][x]] = y_pred[x]
         
-    plt.imshow(result[:,:,5]);
-    plt.colorbar()
-    plt.show()
+    # plt.imshow(result[:,:,2]);
+    # plt.colorbar()
+    # plt.show()
+
+    # scipy.io.savemat('result.mat', mdict={'result': result})
 
 
 

@@ -84,10 +84,16 @@ TRAIN_FILES = ['../data\\Adiac_TRAIN', # 0
                '../data\\Worms_TRAIN',  # 82
                '../data\\WormsTwoClass_TRAIN',  # 83
                '../data\\yoga_TRAIN',  # 84,
-               '../master-by-phil/data/UCR-dataset/fmri/fmri_TRAIN', #85
-               '../master-by-phil/data/UCR-dataset/fmri/fmri_TRAIN', #86
-               '../master-by-phil/data/UCR-dataset/fmri-spatial/fmri_TRAIN', #87
-               '../master-by-phil/data/UCR-dataset/fmri-spatial/fmri_TRAIN', #88
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_1_TRAIN', #85
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_1_TRAIN', #86
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_2_TRAIN', #87
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_2_TRAIN', #88
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_3_TRAIN', #89
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_3_TRAIN', #90
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_4_TRAIN', #91
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_4_TRAIN', #92
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_5_TRAIN', #93
+               '../master-by-phil/data/UCR-dataset/fmri/fmri_5_TRAIN', #94
                ]
 
 TEST_FILES = ['../data\\Adiac_TEST', # 0
@@ -175,10 +181,16 @@ TEST_FILES = ['../data\\Adiac_TEST', # 0
               '../data\\Worms_TEST',  # 82
               '../data\\WormsTwoClass_TEST',  # 83
               '../data\\yoga_TEST',  # 84,
-              '../master-by-phil/data/UCR-dataset/fmri/fmri_VALIDATION', #85
-              '../master-by-phil/data/UCR-dataset/fmri/fmri_TEST', #86
-              '../master-by-phil/data/UCR-dataset/fmri-spatial/fmri_VALIDATION', #87
-              '../master-by-phil/data/UCR-dataset/fmri-spatial/fmri_TEST', #88
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_1_VAL', #85
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_1_TEST', #86
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_2_VAL', #87
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_2_TEST', #88
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_3_VAL', #89
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_3_TEST', #90
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_4_VAL', #91
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_4_TEST', #92
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_5_VAL', #93
+              '../master-by-phil/data/UCR-dataset/fmri/fmri_5_TEST', #94
               ]
 
 MAX_SEQUENCE_LENGTH_LIST = [176, # 0
@@ -270,6 +282,12 @@ MAX_SEQUENCE_LENGTH_LIST = [176, # 0
                             46, # 86
                             46, # 87
                             46, # 88
+                            46, # 89
+                            46, # 90
+                            46, # 91
+                            46, # 92
+                            46, # 93
+                            46, # 94
                             ]
 
 NB_CLASSES_LIST = [37, # 0
@@ -361,4 +379,10 @@ NB_CLASSES_LIST = [37, # 0
                    5, # 86
                    5, # 87
                    5, # 88
+                   5, # 89
+                   5, # 90
+                   5, # 91
+                   5, # 92
+                   5, # 93
+                   5, # 94
                    ]
