@@ -5,9 +5,10 @@ from keras.layers import Conv1D, BatchNormalization, GlobalAveragePooling1D, Per
 from utils.constants import MAX_SEQUENCE_LENGTH_LIST, NB_CLASSES_LIST
 from utils.keras_utils import train_model, evaluate_model, set_trainable, visualize_context_vector, visualize_cam
 from utils.layer_utils import AttentionLSTM
+from keras.utils.vis_utils import plot_model
 import scipy.io
 
-DATASET_INDEX = 85 #reduce 2 by purpose, refer to loop in main func
+DATASET_INDEX = 85
 MAX_SEQUENCE_LENGTH = MAX_SEQUENCE_LENGTH_LIST[DATASET_INDEX]
 NB_CLASS = NB_CLASSES_LIST[DATASET_INDEX]
 
@@ -134,18 +135,19 @@ if __name__ == "__main__":
 
     result = {};
     for i in range(0,5):
-        model = generate_model_3()
+        model = generate_model()
+        # plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
         current_data_idx = DATASET_INDEX + (i*2);
-        weight_name = "fmri_lstm_{}_bias_zscore_b64".format(i+1);
+        weight_name = "fmri_lstmfcn_{}_bias_zscore_b64".format(i+1);
 
         print("Training:");
-        train_model(model, current_data_idx, dataset_prefix=weight_name, epochs=100, batch_size=64,normalize_timeseries=False)
+        train_model(model, current_data_idx, dataset_prefix=weight_name, epochs=2000, batch_size=64,normalize_timeseries=False)
 
         print("Testing:");
         cm = evaluate_model(model, current_data_idx + 1, dataset_prefix=weight_name, batch_size=64, normalize_timeseries=False)
         result[i+1] = cm;
     
-    scipy.io.savemat('result.mat', mdict={'cm1': result[1],'cm2':result[2],'cm3':result[3],'cm4':result[4],'cm5':result[5]});
+    scipy.io.savemat('resultlstmfcn.mat', mdict={'cm1': result[1],'cm2':result[2],'cm3':result[3],'cm4':result[4],'cm5':result[5]});
 
     # visualize_context_vector(model, DATASET_INDEX, dataset_prefix='beef', visualize_sequence=True,
     #                         visualize_classwise=True, limit=1)
